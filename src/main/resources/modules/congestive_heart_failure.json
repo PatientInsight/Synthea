@@ -36,7 +36,8 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Age Guard"
+      "direct_transition": "Age Guard",
+      "name": "Initial"
     },
     "CHF symptom onset 1": {
       "type": "Symptom",
@@ -45,7 +46,8 @@
       "exact": {
         "quantity": 1
       },
-      "direct_transition": "CHF symptom onset 2"
+      "direct_transition": "CHF symptom onset 2",
+      "name": "CHF symptom onset 1"
     },
     "CHF symptom onset 2": {
       "type": "Symptom",
@@ -54,7 +56,8 @@
       "exact": {
         "quantity": 1
       },
-      "direct_transition": "CHF symptom onset 3"
+      "direct_transition": "CHF symptom onset 3",
+      "name": "CHF symptom onset 2"
     },
     "CHF symptom onset 3": {
       "type": "Symptom",
@@ -63,12 +66,13 @@
       "exact": {
         "quantity": 1
       },
-      "direct_transition": "CHF Condition Start"
+      "direct_transition": "CHF Condition Start",
+      "name": "CHF symptom onset 3"
     },
     "CHF Condition Start": {
       "type": "ConditionOnset",
       "assign_to_attribute": "chf",
-      "target_encounter": "CHF initial workup encounter",
+      "target_encounter": "CHF_initial_workup_encounter_ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -76,20 +80,29 @@
           "display": "Chronic congestive heart failure (disorder)"
         }
       ],
-      "direct_transition": "CHF initial workup encounter"
-    },
-    "CHF initial workup encounter": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "chf",
-      "codes": [
+      "name": "CHF Condition Start",
+      "distributed_transition": [
         {
-          "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem"
+          "transition": "CHF_initial_workup_encounter_inpatient",
+          "distribution": 0.2
+        },
+        {
+          "transition": "CHF_initial_workup_encounter_ambulatory",
+          "distribution": 0.5
+        },
+        {
+          "transition": "CHF_initial_workup_encounter_outpatient",
+          "distribution": 0.15
+        },
+        {
+          "transition": "CHF_initial_workup_encounter_daytime",
+          "distribution": 0.1
+        },
+        {
+          "transition": "CHF_initial_workup_encounter_emergency",
+          "distribution": 0.05
         }
-      ],
-      "direct_transition": "NTproBNP lab workup"
+      ]
     },
     "Record_MetabolicPanel": {
       "type": "DiagnosticReport",
@@ -198,7 +211,8 @@
           "unit": "mmol/L"
         }
       ],
-      "direct_transition": "initial encounter end"
+      "direct_transition": "initial encounter end",
+      "name": "Record_MetabolicPanel"
     },
     "followup_CHF_encounter": {
       "type": "Encounter",
@@ -211,7 +225,8 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "Workup imaging for CHF"
+      "direct_transition": "Workup imaging for CHF",
+      "name": "followup_CHF_encounter"
     },
     "CHF careplan": {
       "type": "CarePlanStart",
@@ -235,7 +250,8 @@
           "code": 183301007,
           "display": "physical exercise"
         }
-      ]
+      ],
+      "name": "CHF careplan"
     },
     "initial encounter end": {
       "type": "EncounterEnd",
@@ -252,7 +268,8 @@
       "remarks": [
         "Anemia prevalence for CHF - https://www.ncbi.nlm.nih.gov/pubmed/20630401",
         ""
-      ]
+      ],
+      "name": "initial encounter end"
     },
     "intra_encounter time gate": {
       "type": "Delay",
@@ -260,7 +277,8 @@
         "quantity": 3,
         "unit": "weeks"
       },
-      "direct_transition": "followup_CHF_encounter"
+      "direct_transition": "followup_CHF_encounter",
+      "name": "intra_encounter time gate"
     },
     "CHF Medication Start 1": {
       "type": "MedicationOrder",
@@ -285,7 +303,8 @@
           "unit": "days"
         },
         "refills": 12
-      }
+      },
+      "name": "CHF Medication Start 1"
     },
     "CHF Medication Start 2": {
       "type": "MedicationOrder",
@@ -310,11 +329,13 @@
           "unit": "days"
         },
         "refills": 10
-      }
+      },
+      "name": "CHF Medication Start 2"
     },
     "end_followup_encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Maintaining CHF"
+      "direct_transition": "Maintaining CHF",
+      "name": "end_followup_encounter"
     },
     "chance of CHF": {
       "type": "Delay",
@@ -353,7 +374,8 @@
         {
           "transition": "Age_50-59-Chance of CHF"
         }
-      ]
+      ],
+      "name": "chance of CHF"
     },
     "Maintaining CHF": {
       "type": "Delay",
@@ -376,7 +398,8 @@
         {
           "transition": "followup_CHF_encounter"
         }
-      ]
+      ],
+      "name": "Maintaining CHF"
     },
     "Potential CHF Flare": {
       "type": "Simple",
@@ -389,11 +412,13 @@
           "transition": "Maintaining CHF",
           "distribution": 0.5
         }
-      ]
+      ],
+      "name": "Potential CHF Flare"
     },
     "acute inpatient CHF flare": {
       "type": "Simple",
-      "direct_transition": "CHF ED Visit"
+      "direct_transition": "CHF ED Visit",
+      "name": "acute inpatient CHF flare"
     },
     "CHF ED Visit": {
       "type": "Encounter",
@@ -406,7 +431,7 @@
         }
       ],
       "direct_transition": "Record_CMP",
-      "reason": "CHF Condition Start"
+      "name": "CHF ED Visit"
     },
     "CXR_ED": {
       "type": "ImagingStudy",
@@ -439,11 +464,13 @@
           ]
         }
       ],
-      "direct_transition": "ED_End"
+      "direct_transition": "ED_End",
+      "name": "CXR_ED"
     },
     "ED_End": {
       "type": "EncounterEnd",
-      "direct_transition": "Admit_Discharge Transition"
+      "direct_transition": "Admit_Discharge Transition",
+      "name": "ED_End"
     },
     "Admit_Discharge Transition": {
       "type": "Simple",
@@ -459,7 +486,8 @@
       ],
       "remarks": [
         "Different studies suggest numbers from 74% to 84% for inpatient admittance."
-      ]
+      ],
+      "name": "Admit_Discharge Transition"
     },
     "Inpatient_admittance": {
       "type": "Encounter",
@@ -472,7 +500,7 @@
         }
       ],
       "direct_transition": "Inpatient LOS",
-      "reason": "CHF Condition Start"
+      "name": "Inpatient_admittance"
     },
     "Inpatient CarePlan": {
       "type": "CarePlanStart",
@@ -525,7 +553,8 @@
             "value": 85
           }
         }
-      ]
+      ],
+      "name": "Inpatient CarePlan"
     },
     "Lasix IV": {
       "type": "MedicationOrder",
@@ -549,7 +578,8 @@
         {
           "transition": "O2 Vitals"
         }
-      ]
+      ],
+      "name": "Lasix IV"
     },
     "Inpatient 3D Echo": {
       "type": "ImagingStudy",
@@ -582,7 +612,8 @@
           ]
         }
       ],
-      "direct_transition": "Set 3D Echo"
+      "direct_transition": "Set 3D Echo",
+      "name": "Inpatient 3D Echo"
     },
     "O2 Vitals": {
       "type": "VitalSign",
@@ -592,7 +623,8 @@
       "range": {
         "low": 65,
         "high": 85
-      }
+      },
+      "name": "O2 Vitals"
     },
     "CXR_Inpt_daily": {
       "type": "ImagingStudy",
@@ -625,7 +657,8 @@
           ]
         }
       ],
-      "direct_transition": "inpatient daily labs"
+      "direct_transition": "inpatient daily labs",
+      "name": "CXR_Inpt_daily"
     },
     "Inpatient Daily Transition": {
       "type": "Delay",
@@ -633,16 +666,19 @@
         "quantity": 1,
         "unit": "days"
       },
-      "direct_transition": "Inpatient Death decision"
+      "direct_transition": "Inpatient Death decision",
+      "name": "Inpatient Daily Transition"
     },
     "Inpatient Discharge": {
       "type": "Simple",
-      "direct_transition": "End Inpatient Care Plan"
+      "direct_transition": "End Inpatient Care Plan",
+      "name": "Inpatient Discharge"
     },
     "End Inpatient Care Plan": {
       "type": "CarePlanEnd",
       "direct_transition": "Reset 3D Echo",
-      "careplan": "Inpatient CarePlan"
+      "careplan": "Inpatient CarePlan",
+      "name": "End Inpatient Care Plan"
     },
     "End Inpatient Encounter": {
       "type": "EncounterEnd",
@@ -676,7 +712,8 @@
       ],
       "remarks": [
         "Discharge the patient. Starting since the early 2000s this has a likelihood of being an enrollment into a telemedical home monitoring program, designed to prevent readmissions."
-      ]
+      ],
+      "name": "End Inpatient Encounter"
     },
     "inpatient daily labs": {
       "type": "DiagnosticReport",
@@ -785,7 +822,9 @@
           "unit": "mmol/L"
         }
       ],
-      "direct_transition": "Inpatient Daily Transition"
+      "target_encounter": "Wellness_Encounter",
+      "direct_transition": "Inpatient Daily Transition",
+      "name": "inpatient daily labs"
     },
     "Record_CMP": {
       "type": "DiagnosticReport",
@@ -1014,7 +1053,8 @@
           }
         }
       ],
-      "direct_transition": "CXR_ED"
+      "direct_transition": "CXR_ED",
+      "name": "Record_CMP"
     },
     "Age Guard": {
       "type": "Guard",
@@ -1024,48 +1064,24 @@
         "quantity": 50,
         "unit": "years"
       },
-      "direct_transition": "chance of CHF"
+      "direct_transition": "chance of CHF",
+      "name": "Age Guard"
     },
     "Age_50-59-Chance of CHF": {
       "type": "Simple",
       "distributed_transition": [
         {
           "transition": "CHF onset",
-          "distribution": 0.003
+          "distribution": 0.01
         },
         {
           "transition": "chance of CHF",
-          "distribution": 0.9970000000000001
+          "distribution": 0.99
         }
-      ]
+      ],
+      "name": "Age_50-59-Chance of CHF"
     },
     "Age_60-69-Chance of CHF": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "CHF onset",
-          "distribution": 0.008
-        },
-        {
-          "transition": "chance of CHF",
-          "distribution": 0.992
-        }
-      ]
-    },
-    "Age_70-79-Chance of CHF": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "CHF onset",
-          "distribution": 0.013
-        },
-        {
-          "transition": "chance of CHF",
-          "distribution": 0.9870000000000001
-        }
-      ]
-    },
-    "Age_80-Chance of CHF": {
       "type": "Simple",
       "distributed_transition": [
         {
@@ -1076,11 +1092,41 @@
           "transition": "chance of CHF",
           "distribution": 0.98
         }
-      ]
+      ],
+      "name": "Age_60-69-Chance of CHF"
+    },
+    "Age_70-79-Chance of CHF": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "CHF onset",
+          "distribution": 0.03
+        },
+        {
+          "transition": "chance of CHF",
+          "distribution": 0.97
+        }
+      ],
+      "name": "Age_70-79-Chance of CHF"
+    },
+    "Age_80-Chance of CHF": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "CHF onset",
+          "distribution": 0.04
+        },
+        {
+          "transition": "chance of CHF",
+          "distribution": 0.96
+        }
+      ],
+      "name": "Age_80-Chance of CHF"
     },
     "CHF onset": {
       "type": "Simple",
-      "direct_transition": "Reset inpatient count"
+      "direct_transition": "Reset inpatient count",
+      "name": "CHF onset"
     },
     "CHF careplan for smokers": {
       "type": "CarePlanStart",
@@ -1109,7 +1155,8 @@
           "display": "Smoking cessation education"
         }
       ],
-      "direct_transition": "Wrap up follow-up encounter"
+      "direct_transition": "Wrap up follow-up encounter",
+      "name": "CHF careplan for smokers"
     },
     "Assign CHF care plan": {
       "type": "Simple",
@@ -1126,15 +1173,18 @@
         {
           "transition": "CHF careplan"
         }
-      ]
+      ],
+      "name": "Assign CHF care plan"
     },
     "Wrap up follow-up encounter": {
       "type": "Simple",
-      "direct_transition": "end_followup_encounter"
+      "direct_transition": "end_followup_encounter",
+      "name": "Wrap up follow-up encounter"
     },
     "Order medications": {
       "type": "Simple",
-      "direct_transition": "CHF Medication Start 1"
+      "direct_transition": "CHF Medication Start 1",
+      "name": "Order medications"
     },
     "Report workup imaging": {
       "type": "DiagnosticReport",
@@ -1159,20 +1209,21 @@
           "vital_sign": "Left ventricular Ejection fraction"
         }
       ],
-      "direct_transition": "Order medications"
+      "direct_transition": "Order medications",
+      "name": "Report workup imaging"
     },
     "Workup imaging for CHF": {
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": "434158009",
-        "display": "Transthoracic three dimensional ultrasonography of heart (procedure)"
+        "code": "34552-0",
+        "display": "trans thoracic echocardiogram"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": "261179002",
+            "code": 261179002,
             "display": "thoracic"
           },
           "modality": {
@@ -1192,7 +1243,8 @@
           ]
         }
       ],
-      "direct_transition": "Read workup imaging"
+      "direct_transition": "Read workup imaging",
+      "name": "Workup imaging for CHF"
     },
     "Calculate LVEF": {
       "type": "VitalSign",
@@ -1202,7 +1254,8 @@
       "range": {
         "low": 30,
         "high": 49
-      }
+      },
+      "name": "Calculate LVEF"
     },
     "Read workup imaging": {
       "type": "Observation",
@@ -1216,7 +1269,8 @@
         }
       ],
       "direct_transition": "Report workup imaging",
-      "vital_sign": "Left ventricular Ejection fraction"
+      "vital_sign": "Left ventricular Ejection fraction",
+      "name": "Read workup imaging"
     },
     "NTproBNP lab workup": {
       "type": "Observation",
@@ -1233,29 +1287,34 @@
       "range": {
         "low": 200,
         "high": 2000
-      }
+      },
+      "name": "NTproBNP lab workup"
     },
     "Count inpatient stays": {
       "type": "Counter",
       "attribute": "inpatient-count",
       "action": "increment",
-      "direct_transition": "Inpatient CarePlan"
+      "direct_transition": "Inpatient CarePlan",
+      "name": "Count inpatient stays"
     },
     "Inpatient LOS": {
       "type": "SetAttribute",
       "attribute": "inpatient-los",
       "direct_transition": "Count inpatient stays",
-      "value": 0
+      "value": 0,
+      "name": "Inpatient LOS"
     },
     "Reset inpatient count": {
       "type": "SetAttribute",
       "attribute": "inpatient-count",
       "direct_transition": "Calculate LVEF",
-      "value": 0
+      "value": 0,
+      "name": "Reset inpatient count"
     },
     "Inpatient daily routine": {
       "type": "Simple",
-      "direct_transition": "Lasix IV"
+      "direct_transition": "Lasix IV",
+      "name": "Inpatient daily routine"
     },
     "Death": {
       "type": "Death",
@@ -1263,10 +1322,12 @@
         "quantity": 1,
         "unit": "days"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "name": "Death"
     },
     "Terminal": {
-      "type": "Terminal"
+      "type": "Terminal",
+      "name": "Terminal"
     },
     "Inpatient Discharge decision": {
       "type": "Counter",
@@ -1294,7 +1355,8 @@
       ],
       "remarks": [
         "Model the ALOS (5.8) through an increased likelihood of a discharge after 5 days."
-      ]
+      ],
+      "name": "Inpatient Discharge decision"
     },
     "Inpatient Death decision": {
       "type": "Simple",
@@ -1320,7 +1382,8 @@
       ],
       "remarks": [
         "A high number of previous inpatient encounters increases the likelihood of death."
-      ]
+      ],
+      "name": "Inpatient Death decision"
     },
     "Maintaining CHF with Telemedicine": {
       "type": "Delay",
@@ -1341,16 +1404,18 @@
           "transition": "Potential CHF Flare",
           "distribution": 0.010000000000000009
         }
-      ]
+      ],
+      "name": "Maintaining CHF with Telemedicine"
     },
     "Skip daily measurement": {
       "type": "Simple",
-      "direct_transition": "Maintaining CHF with Telemedicine"
+      "direct_transition": "Maintaining CHF with Telemedicine",
+      "name": "Skip daily measurement"
     },
     "Daily self-measurement": {
       "type": "MultiObservation",
       "category": "vital-signs",
-      "number_of_observations": 2,
+      "number_of_observations": 0,
       "codes": [
         {
           "system": "LOINC",
@@ -1362,7 +1427,7 @@
       "observations": [
         {
           "category": "vital-signs",
-          "unit": "mm[Hg]",
+          "unit": "",
           "codes": [
             {
               "system": "LOINC",
@@ -1374,7 +1439,7 @@
         },
         {
           "category": "vital-signs",
-          "unit": "mm[Hg]",
+          "unit": "",
           "codes": [
             {
               "system": "LOINC",
@@ -1384,11 +1449,13 @@
           ],
           "vital_sign": "Diastolic Blood Pressure"
         }
-      ]
+      ],
+      "name": "Daily self-measurement"
     },
     "End self-measurement": {
       "type": "EncounterEnd",
-      "direct_transition": "Maintaining CHF with Telemedicine"
+      "direct_transition": "Maintaining CHF with Telemedicine",
+      "name": "End self-measurement"
     },
     "Daily Self-Measurement Encounter": {
       "type": "Encounter",
@@ -1401,23 +1468,27 @@
         }
       ],
       "direct_transition": "Daily self-measurement",
-      "reason": "chf"
+      "reason": "chf",
+      "name": "Daily Self-Measurement Encounter"
     },
     "Set 3D Echo": {
       "type": "SetAttribute",
       "attribute": "3decho",
       "direct_transition": "CXR_Inpt_daily",
-      "value": true
+      "value": true,
+      "name": "Set 3D Echo"
     },
     "Reset 3D Echo": {
       "type": "SetAttribute",
       "attribute": "3decho",
-      "direct_transition": "End Inpatient Encounter"
+      "direct_transition": "End Inpatient Encounter",
+      "name": "Reset 3D Echo"
     },
     "Anemia_Submodule": {
       "type": "CallSubmodule",
       "submodule": "anemia/anemia_sub",
-      "direct_transition": "intra_encounter time gate"
+      "direct_transition": "intra_encounter time gate",
+      "name": "Anemia_Submodule"
     },
     "Check_Anemia_Exist": {
       "type": "Simple",
@@ -1433,7 +1504,78 @@
         {
           "transition": "intra_encounter time gate"
         }
-      ]
+      ],
+      "name": "Check_Anemia_Exist"
+    },
+    "CHF_initial_workup_encounter_ambulatory": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "chf",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "NTproBNP lab workup",
+      "name": "CHF_initial_workup_encounter_ambulatory"
+    },
+    "CHF_initial_workup_encounter_inpatient": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "chf",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"   
+        }   
+      ],
+      "name": "CHF_initial_workup_encounter_inpatient",
+      "direct_transition": "NTproBNP lab workup"
+    },
+    "CHF_initial_workup_encounter_outpatient": {
+      "type": "Encounter",
+      "encounter_class": "outpatient",
+      "reason": "chf",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "name": "CHF_initial_workup_encounter_outpatient",
+      "direct_transition": "NTproBNP lab workup"
+    },
+    "CHF_initial_workup_encounter_daytime": {
+      "type": "Encounter",
+      "encounter_class": "daytime",
+      "reason": "chf",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "name": "CHF_initial_workup_encounter_daytime",
+      "direct_transition": "NTproBNP lab workup"
+    },
+    "CHF_initial_workup_encounter_emergency": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "chf",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "name": "CHF_initial_workup_encounter_emergency",
+      "direct_transition": "NTproBNP lab workup"
     }
   }
 }

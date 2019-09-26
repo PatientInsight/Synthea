@@ -18,7 +18,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 public final class EncounterModule extends Module {
 
   public static final String ACTIVE_WELLNESS_ENCOUNTER = "active_wellness_encounter";
-  public static final String ACTIVE_URGENT_CARE_ENCOUNTER = "active_urgent_care_encounter";
+  public static final String ACTIVE_URGENT_CARE_ENCOUNTER = "active_urgent_care_encounter";  
   public static final String ACTIVE_EMERGENCY_ENCOUNTER = "active_emergency_encounter";
   /**
    * These are thresholds for patients to seek symptom-driven care - they'll go to

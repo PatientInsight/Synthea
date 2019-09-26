@@ -369,8 +369,24 @@ public class HealthRecord {
   }
 
   public enum EncounterType {
-    WELLNESS("AMB"), AMBULATORY("AMB"), OUTPATIENT("AMB"),
-        INPATIENT("IMP"), EMERGENCY("EMER"), URGENTCARE("AMB");
+    // WELLNESS("AMB"), AMBULATORY("AMB"), OUTPATIENT("AMB"),
+    //     INPATIENT("IMP"), EMERGENCY("EMER"), URGENTCARE("AMB");
+
+    AMBULATORY("AMB"), 
+    EMERGENCY("EMER"), 
+    FIELD("FLD"),
+    HOMEHEALTH("HH"),
+    INPATIENT("IMP"), 
+    ACUTE("ACUTE"), 
+    NONACUTE("NONAC"), 
+    OBSERVATION("OBSENC"), 
+    PREADMISSION("PRENC"), 
+    SHORTSTAY("SS"), 
+    VIRTUAL("VR"), 
+    DAYTIME("OBSENC"), 
+    WELLNESS("AMB"), 
+    OUTPATIENT("AMB"),
+    URGENTCARE("AMB");  
 
     // http://www.hl7.org/implement/standards/fhir/v3/ActEncounterCode/vs.html
     private final String code;
