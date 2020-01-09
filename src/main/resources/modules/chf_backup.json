@@ -88,11 +88,11 @@
         },
         {
           "transition": "CHF_initial_workup_encounter_ambulatory",
-          "distribution": 0.4
+          "distribution": 0.5
         },
         {
           "transition": "CHF_initial_workup_encounter_outpatient",
-          "distribution": 0.2
+          "distribution": 0.15
         },
         {
           "transition": "CHF_initial_workup_encounter_daytime",
@@ -100,7 +100,7 @@
         },
         {
           "transition": "CHF_initial_workup_encounter_emergency",
-          "distribution": 0.1
+          "distribution": 0.05
         }
       ]
     },
@@ -211,7 +211,7 @@
           "unit": "mmol/L"
         }
       ],
-      "direct_transition": "New_State",
+      "direct_transition": "initial encounter end",
       "name": "Record_MetabolicPanel"
     },
     "followup_CHF_encounter": {
@@ -249,16 +249,6 @@
           "system": "SNOMED-CT",
           "code": 183301007,
           "display": "physical exercise"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": 372700007,
-          "display": "Nitrate-based vasodilating agent"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": 372691009,
-          "display": "Loop diuretic (substance)"
         }
       ],
       "name": "CHF careplan"
@@ -325,7 +315,7 @@
           "display": "Lasix 40mg"
         }
       ],
-      "direct_transition": "CHF_Medication_Start",
+      "direct_transition": "Assign CHF care plan",
       "reason": "chf",
       "prescription": {
         "dosage": {
@@ -521,7 +511,7 @@
           "display": "Inpatient care plan (record artifact)"
         }
       ],
-      "direct_transition": "CardiacMRI",
+      "direct_transition": "Inpatient daily routine",
       "activities": [
         {
           "system": "SNOMED-CT",
@@ -629,12 +619,46 @@
       "type": "VitalSign",
       "vital_sign": "Oxygen Saturation",
       "unit": "%",
-      "direct_transition": "PhysicalExam",
+      "direct_transition": "CXR_Inpt_daily",
       "range": {
         "low": 65,
         "high": 85
       },
       "name": "O2 Vitals"
+    },
+    "CXR_Inpt_daily": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 399208008,
+        "display": "Plain chest X-ray"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "DX",
+            "display": "Digital Radiography"
+          },
+          "instances": [
+            {
+              "title": "Plain chest X-ray",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage – for Presentation"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "inpatient daily labs",
+      "name": "CXR_Inpt_daily"
     },
     "Inpatient Daily Transition": {
       "type": "Delay",
@@ -799,7 +823,7 @@
         }
       ],
       "target_encounter": "Wellness_Encounter",
-      "direct_transition": "IntakeOutake",
+      "direct_transition": "Inpatient Daily Transition",
       "name": "inpatient daily labs"
     },
     "Record_CMP": {
@@ -1062,11 +1086,11 @@
       "distributed_transition": [
         {
           "transition": "CHF onset",
-          "distribution": 0.1
+          "distribution": 0.10
         },
         {
           "transition": "chance of CHF",
-          "distribution": 0.9
+          "distribution": 0.90
         }
       ],
       "name": "Age_60-69-Chance of CHF"
@@ -1090,11 +1114,11 @@
       "distributed_transition": [
         {
           "transition": "CHF onset",
-          "distribution": 0.2
+          "distribution": 0.20
         },
         {
           "transition": "chance of CHF",
-          "distribution": 0.8
+          "distribution": 0.80
         }
       ],
       "name": "Age_80-Chance of CHF"
@@ -1129,16 +1153,6 @@
           "system": "SNOMED-CT",
           "code": 225323000,
           "display": "Smoking cessation education"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": 372691009,
-          "display": "Loop diuretic (substance)"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": 372700007,
-          "display": "Nitrate-based vasodilating agent"
         }
       ],
       "direct_transition": "Wrap up follow-up encounter",
@@ -1460,7 +1474,7 @@
     "Set 3D Echo": {
       "type": "SetAttribute",
       "attribute": "3decho",
-      "direct_transition": "PhysicalExam",
+      "direct_transition": "CXR_Inpt_daily",
       "value": true,
       "name": "Set 3D Echo"
     },
@@ -1515,8 +1529,8 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
-        }
+          "display": "Encounter for problem"   
+        }   
       ],
       "name": "CHF_initial_workup_encounter_inpatient",
       "direct_transition": "NTproBNP lab workup"
@@ -1549,162 +1563,6 @@
       "name": "CHF_initial_workup_encounter_daytime",
       "direct_transition": "NTproBNP lab workup"
     },
-    "BodyWeight": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 363808001,
-          "display": "Body weight measure"
-        }
-      ],
-      "direct_transition": "inpatient daily labs",
-      "name": "BodyWeight"
-    },
-    "IntakeOutake": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 63061008,
-          "display": "Measuring intake and output (procedure)"
-        }
-      ],
-      "direct_transition": "Inpatient Daily Transition",
-      "name": "IntakeOutake"
-    },
-    "PhysicalExam": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 425044008,
-          "display": "Physical exam section"
-        }
-      ],
-      "direct_transition": "BodyWeight",
-      "name": "PhysicalExam"
-    },
-    "CHF_Medication_Start": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 4917,
-          "display": "Nitroglycerin"
-        }
-      ],
-      "reason": "chf",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 30,
-          "unit": "days"
-        },
-        "refills": 10
-      },
-      "name": "CHF_Medication_Start",
-      "direct_transition": "MedicationReconciliation"
-    },
-    "New_State": {
-      "type": "Simple",
-      "direct_transition": "initial encounter end",
-      "name": "New_State"
-    },
-    "MedicationReconciliation": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 430193006,
-          "display": "Medication Reconciliation (procedure)"
-        }
-      ],
-      "direct_transition": "Assign CHF care plan",
-      "name": "MedicationReconciliation"
-    },
-    "CardiacMRI": {
-      "type": "ImagingStudy",
-      "procedure_code": {
-        "system": "SNOMED-CT",
-        "code": 361753016,
-        "display": "Cardiac MRI"
-      },
-      "series": [
-        {
-          "body_site": {
-            "system": "SNOMED-CT",
-            "code": 51185008,
-            "display": "Thoracic structure"
-          },
-          "modality": {
-            "system": "DICOM-DCM",
-            "code": "MR",
-            "display": "Magnetic Resonance"
-          },
-          "instances": [
-            {
-              "title": "Cardiac MRI",
-              "sop_class": {
-                "system": "DICOM-SOP",
-                "code": "1.2.840.10008.5.1.4.1.1.4.1",
-                "display": "Enhanced MR Image Storage"
-              }
-            }
-          ]
-        }
-      ],
-      "name": "CardiacMRI",
-      "direct_transition": "CardiologyConsultation"
-    },
-    "CardiologyConsultation": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "C0583557",
-          "display": "Seen by cardiologist"
-        }
-      ],
-      "duration": {
-        "low": 30,
-        "high": 30,
-        "unit": "minutes"
-      },
-      "name": "CardiologyConsultation",
-      "distributed_transition": [
-        {
-          "transition": "CardiacRecynchronization",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Inpatient daily routine",
-          "distribution": 0.8
-        }
-      ]
-    },
-    "CardiacRecynchronization": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 3014231010,
-          "display": "Cardiac resynchronization therapy implantable defibrillator"
-        }
-      ],
-      "duration": {
-        "low": 4,
-        "high": 4,
-        "unit": "hours"
-      },
-      "direct_transition": "Inpatient daily routine",
-      "name": "CardiacRecynchronization"
-    },
     "CHF_initial_workup_encounter_emergency": {
       "type": "Encounter",
       "encounter_class": "emergency",
@@ -1712,25 +1570,11 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 50849002,
-          "display": "Emergency room admission (procedure)"
+          "code": 185347001,
+          "display": "Encounter for problem"
         }
       ],
       "name": "CHF_initial_workup_encounter_emergency",
-      "direct_transition": "CHF_initial_workup_encounter_observation"
-    },
-    "CHF_initial_workup_encounter_observation": {
-      "type": "Encounter",
-      "encounter_class": "emergency",
-      "reason": "chf",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 3461000175106,
-          "display": "Admitted for observation (finding)"
-        }
-      ],
-      "name": "CHF_initial_workup_encounter_observation",
       "direct_transition": "NTproBNP lab workup"
     }
   }
