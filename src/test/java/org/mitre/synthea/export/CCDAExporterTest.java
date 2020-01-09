@@ -60,7 +60,6 @@ public class CCDAExporterTest {
       }
     }
 
-    // assertEquals(0, validationErrors.size());
-    assertEquals(true, true);
+    assertEquals(0, validationErrors.size());
   }
 }

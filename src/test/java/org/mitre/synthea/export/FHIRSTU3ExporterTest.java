@@ -167,9 +167,8 @@ public class FHIRSTU3ExporterTest {
         Exporter.export(person, System.currentTimeMillis());
       }
     }
-    assertTrue(true);
-    // assertTrue("Validation of exported FHIR bundle failed: "
-    //     + String.join("|", validationErrors), validationErrors.size() == 0);
+    assertTrue("Validation of exported FHIR bundle failed: "
+        + String.join("|", validationErrors), validationErrors.size() == 0);
   }
 
   /**
