@@ -58,6 +58,30 @@ Some settings can be changed in `./src/main/resources/synthea.properties`.
 
 Synthea<sup>TM</sup> will output patient records in C-CDA and FHIR formats in `./output`.
 
+
+### Generate Synthetic Patients for Cardiac Utility
+
+```
+# download synthea
+# this version of synthea is configured with cardiac data
+# and exports DSTU2 files
+git clone https://github.com/PatientInsight/synthea.git
+cd synthea
+
+# build the utility
+./gradlew build check test
+
+# edit the congestive_heart_failure module as needed
+nano modules/congestive_heart_failure.json
+
+# rebuild the utility with the updated modules
+./gradlew build check test
+
+# run synthea and create a few thousand test patients
+./run_synthea -s 12345 -m *heart* -p 1000 California "Los Angeles"
+```
+
+
 ### Synthea<sup>TM</sup> GraphViz
 Generate graphical visualizations of Synthea<sup>TM</sup> rules and modules.
 ```
