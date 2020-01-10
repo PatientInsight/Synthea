@@ -416,32 +416,19 @@
       "distributed_transition": [
         {
           "transition": "acute inpatient CHF flare",
-          "distribution": 0.5
+          "distribution": 0.8
         },
         {
           "transition": "Maintaining CHF",
-          "distribution": 0.5
+          "distribution": 0.2
         }
       ],
       "name": "Potential CHF Flare"
     },
     "acute inpatient CHF flare": {
       "type": "Simple",
-      "direct_transition": "CHF ED Visit",
+      "direct_transition": "CHF EmergencyDept Visit",
       "name": "acute inpatient CHF flare"
-    },
-    "CHF ED Visit": {
-      "type": "Encounter",
-      "encounter_class": "emergency",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for Problem"
-        }
-      ],
-      "direct_transition": "Record_CMP",
-      "name": "CHF ED Visit"
     },
     "CXR_ED": {
       "type": "ImagingStudy",
@@ -487,11 +474,11 @@
       "distributed_transition": [
         {
           "transition": "Inpatient_admittance",
-          "distribution": 0.84
+          "distribution": 0.9
         },
         {
           "transition": "Maintaining CHF",
-          "distribution": 0.16000000000000014
+          "distribution": 0.1
         }
       ],
       "remarks": [
@@ -1558,7 +1545,7 @@
           "display": "Body weight measure"
         }
       ],
-      "direct_transition": "inpatient daily labs",
+      "direct_transition": "Body Weight Measurement",
       "name": "BodyWeight"
     },
     "IntakeOutake": {
@@ -1732,6 +1719,36 @@
       ],
       "name": "CHF_initial_workup_encounter_observation",
       "direct_transition": "NTproBNP lab workup"
+    },
+    "CHF EmergencyDept Visit": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 50849002,
+          "display": "Emergency room admission (procedure)"
+        }
+      ],
+      "direct_transition": "Record_CMP",
+      "name": "CHF EmergencyDept Visit"
+    },
+    "Body Weight Measurement": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "kg",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29463-7",
+          "display": "Body weight"
+        }
+      ],
+      "direct_transition": "inpatient daily labs",
+      "name": "Body Weight Measurement",
+      "exact": {
+        "quantity": 1
+      }
     }
   }
 }
