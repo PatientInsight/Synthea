@@ -400,7 +400,7 @@
             "condition_type": "PriorState",
             "name": "followup_CHF_encounter",
             "within": {
-              "quantity": 1,
+              "quantity": 5,
               "unit": "years"
             }
           }
@@ -565,58 +565,16 @@
       "reason": "chf",
       "conditional_transition": [
         {
-          "transition": "Inpatient 3D Echo",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "3decho",
-            "operator": "is nil"
-          }
-        },
-        {
           "transition": "O2 Vitals"
         }
       ],
       "name": "Lasix IV"
     },
-    "Inpatient 3D Echo": {
-      "type": "ImagingStudy",
-      "procedure_code": {
-        "system": "SNOMED-CT",
-        "code": 433236007,
-        "display": "Transthoracic echocardiography"
-      },
-      "series": [
-        {
-          "body_site": {
-            "system": "SNOMED-CT",
-            "code": 261179002,
-            "display": "Thoracic"
-          },
-          "modality": {
-            "system": "DICOM-DCM",
-            "code": "US",
-            "display": "Ultrasound"
-          },
-          "instances": [
-            {
-              "title": "Transthoracic echocardiography",
-              "sop_class": {
-                "system": "DICOM-SOP",
-                "code": "1.2.840.10008.5.1.4.1.1.3.1",
-                "display": "Ultrasound Multiframe Image Storage"
-              }
-            }
-          ]
-        }
-      ],
-      "direct_transition": "Set 3D Echo",
-      "name": "Inpatient 3D Echo"
-    },
     "O2 Vitals": {
       "type": "VitalSign",
       "vital_sign": "Oxygen Saturation",
       "unit": "%",
-      "direct_transition": "PhysicalExam",
+      "direct_transition": "Echochardiography",
       "range": {
         "low": 65,
         "high": 85
@@ -664,11 +622,11 @@
           "distributions": [
             {
               "transition": "Maintaining CHF with Telemedicine",
-              "distribution": 0.7
+              "distribution": 0.5
             },
             {
               "transition": "Maintaining CHF",
-              "distribution": 0.30000000000000004
+              "distribution": 0.5
             }
           ]
         }
@@ -1238,7 +1196,7 @@
         {
           "system": "LOINC",
           "code": "10230-1",
-          "display": "Left ventricular Ejection fraction"
+          "display": "Left ventricular ejection fraction"
         }
       ],
       "direct_transition": "Report workup imaging",
@@ -1444,13 +1402,6 @@
       "reason": "chf",
       "name": "Daily Self-Measurement Encounter"
     },
-    "Set 3D Echo": {
-      "type": "SetAttribute",
-      "attribute": "3decho",
-      "direct_transition": "PhysicalExam",
-      "value": true,
-      "name": "Set 3D Echo"
-    },
     "Reset 3D Echo": {
       "type": "SetAttribute",
       "attribute": "3decho",
@@ -1615,40 +1566,6 @@
       "direct_transition": "Assign CHF care plan",
       "name": "MedicationReconciliation"
     },
-    "CardiacMRI": {
-      "type": "ImagingStudy",
-      "procedure_code": {
-        "system": "SNOMED-CT",
-        "code": 361753016,
-        "display": "Cardiac MRI"
-      },
-      "series": [
-        {
-          "body_site": {
-            "system": "SNOMED-CT",
-            "code": 51185008,
-            "display": "Thoracic structure"
-          },
-          "modality": {
-            "system": "DICOM-DCM",
-            "code": "MR",
-            "display": "Magnetic Resonance"
-          },
-          "instances": [
-            {
-              "title": "Cardiac MRI",
-              "sop_class": {
-                "system": "DICOM-SOP",
-                "code": "1.2.840.10008.5.1.4.1.1.4.1",
-                "display": "Enhanced MR Image Storage"
-              }
-            }
-          ]
-        }
-      ],
-      "name": "CardiacMRI",
-      "direct_transition": "CardiologyConsultation"
-    },
     "CardiologyConsultation": {
       "type": "Procedure",
       "codes": [
@@ -1749,6 +1666,108 @@
       "exact": {
         "quantity": 1
       }
+    },
+    "CardiacMriImages": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 361753016,
+        "display": "Cardiac MRI"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "MR",
+            "display": "Magnetic Resonance"
+          },
+          "instances": [
+            {
+              "title": "Cardiac MRI",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.4.1",
+                "display": "Enhanced MR Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "name": "CardiacMriImages",
+      "direct_transition": "CardiologyConsultation"
+    },
+    "CardiacMRI": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 361753016,
+          "display": "Cardiac MRI"
+        }
+      ],
+      "duration": {
+        "low": 240,
+        "high": 300,
+        "unit": "minutes"
+      },
+      "direct_transition": "CardiacMriImages",
+      "name": "CardiacMRI"
+    },
+    "Inpatient_3D_Echo": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 433236007,
+        "display": "Transthoracic echocardiography"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 261179002,
+            "display": "Thoracic"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Transthoracic echocardiography",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.3.1",
+                "display": "Ultrasound Multiframe Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "name": "Inpatient_3D_Echo",
+      "direct_transition": "PhysicalExam"
+    },
+    "Echochardiography": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 29303009,
+          "display": "Electrocardiographic procedure (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Inpatient_3D_Echo",
+      "name": "Echochardiography"
     }
   }
 }
